@@ -12,6 +12,8 @@ from fastapi import (
     status,
     Request,
 )
+from fastapi.responses import JSONResponse
+
 from .schemas import (
     ProfileCreate,
     ProfileUpdate,

@@ -14,17 +14,17 @@ class ProfileCreate(BaseModel):
     role: str
     bio: Optional[str]
     linkedin_url: Optional[str]
-    interests: Optional[List[str, Any]]
+    interests: Optional[List[dict]]
 
 class ProfileUpdate(BaseModel):
     role: Optional[str]
     bio: Optional[str]
     linkedin_url: Optional[str]
-    interests: Optional[List[str, Any]]
+    interests: Optional[List[dict]]
 
 class ProfileResponse(BaseModel):
     id: UUID4
     role: str
     bio: Optional[str]
     linkedin_url: Optional[str]
-    interests: Optional[List[str, Any]]
+    interests: Optional[List[dict]]

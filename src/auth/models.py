@@ -13,7 +13,6 @@ from sqlalchemy.dialects.postgresql import(
     ENUM,
     JSONB,
 )
-from src.common.enums import UserEnum
 from src.common.database import Base
 
 class User(Base):

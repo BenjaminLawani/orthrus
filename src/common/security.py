@@ -20,7 +20,6 @@ from fastapi import (
 )
 from fastapi.security import OAuth2PasswordBearer
 
-from .enums import UserEnum
 from .config import settings
 from .database import get_db
 from src.auth.models import User
@@ -43,7 +42,8 @@ def verify_password(plain_password: str, hashed_password: str):
 def generate_otp_code():
     return random.randint(100000, 999999)
 
-def create_access_token(data: dict, expires_delta: timedelta | None):
+# FIXED: Added default value for expires_delta parameter
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(UTC) + expires_delta
@@ -61,20 +61,12 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         )
     try:
         payload = jwt_decode(token)
-        user_id : UUID = payload.get("sub")
+        user_id : str = payload.get("sub")
         if user_id is None:
             raise credentials_exception
     except Exception:
         raise credentials_exception
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(str(User.id) == user_id).first()
     if user is None:
         raise credentials_exception
     return user
-
-def is_admin(current_user: User = Depends(get_current_user)):
-    if not current_user.user_kind == UserEnum.ADMIN:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail = "Not Enough Permissions"
-        )
-    return current_user

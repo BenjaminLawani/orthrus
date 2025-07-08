@@ -43,15 +43,15 @@ auth_router = APIRouter(
 )
 
 
-
 @auth_router.post("/login", response_model=Token)
 def login_route(
     request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
-    db_user = db.query(User).filter(User.username==form_data.username).first()
-    if not db_user or verify_password(form_data.password, db_user.password):
+    db_user = db.query(User).filter((User.username==form_data.username) | (User.email == form_data.username)).first()
+    # FIXED: Changed 'or' to 'and' for proper password verification
+    if not db_user or not verify_password(form_data.password, db_user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid Credentials."
@@ -60,8 +60,7 @@ def login_route(
         data={
             "sub": str(db_user.id),
             "email": db_user.email,
-        },
-        expires_delta=settings.TOKEN_EXPIRES
+        }
     )
     return {"access_token":access_token, "token_type": "bearer"}
 
@@ -71,7 +70,7 @@ def create_new_user_route(
     user_data: UserCreate,
     db: Session = Depends(get_db),
 ):
-    existing_user = db.query(User).filter(User.email == user_data.email).first
+    existing_user = db.query(User).filter(User.email == user_data.email).first()
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -86,12 +85,18 @@ def create_new_user_route(
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-    except IntegrityError as e:
-        db.rollback
+    except Exception as e:
+        # FIXED: Added parentheses to db.rollback()
+        db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error {e} occurred while creating this user."
         )
+    return UserResponse(
+        id=str(new_user.id),
+        username=new_user.username,
+        email=new_user.email,
+    )
     
 @auth_router.post("/request-otp", response_model=dict)
 async def request_otp_code(
@@ -116,10 +121,10 @@ async def request_otp_code(
         email_content = f"""
         Your OTP code is: {otp}
         
-        This code will expire in 10 minutes.
+        This code will expire in 5 minutes.
         """
         
-        await fm.send_email(  # <-- Await the async function
+        await fm.send_email(
             subject="Your OTP Code",
             recipients=[user.email],
             body=email_content
@@ -128,16 +133,12 @@ async def request_otp_code(
         return {"message": "OTP sent successfully"}
     
     except Exception as e:
+        db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to send OTP: {str(e)}"
         )
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-            detail=f"OTP request failed: {str(e)}"
-        )
+    # REMOVED: Duplicate exception block
     
 @auth_router.post("/validate-otp")
 def validate_otp_route(
@@ -193,14 +194,3 @@ def validate_otp_route(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
             detail=f"OTP validation failed: {str(e)}"
         )
-    
-# @auth_router.get("/me", response_model=UserResponse)
-# def get_logged_in_user_profile(
-#     request: Request,
-#     current_user: User = Depends(get_current_user)
-# ):
-#     return UserResponse(
-#         id = str(current_user.id),
-#         username=current_user.username,
-#         email=current_user.email,
-#     )
