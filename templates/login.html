@@ -35,12 +35,12 @@
                 <form id="loginForm" class="space-y-6">
                     <div class="space-y-2">
                         <label for="email" class="text-sm font-medium text-gray-700">
-                            Email
+                            Email or Username
                         </label>
                         <input
                             id="email"
-                            type="email"
-                            placeholder="Enter your email"
+                            type="text"
+                            placeholder="Enter your email or username"
                             required
                             class="w-full h-12 text-base border border-gray-200 rounded-md px-3 focus:border-gray-400 focus:outline-none focus:ring-0"
                         />
@@ -87,6 +87,8 @@
                         </a>
                     </div>
 
+                    <div id="errorMessage" class="hidden text-red-500 text-center text-sm py-2"></div>
+
                     <button
                         type="submit"
                         id="submitButton"
@@ -99,7 +101,7 @@
                 <div class="mt-8 text-center">
                     <p class="text-gray-600">
                         Don't have an account? 
-                        <a href="/signup" class="text-gray-900 font-medium hover:text-gray-700">
+                        <a href="/get-started" class="text-gray-900 font-medium hover:text-gray-700">
                             Sign up
                         </a>
                     </p>
@@ -173,23 +175,57 @@
         // Form submission
         const loginForm = document.getElementById('loginForm');
         const submitButton = document.getElementById('submitButton');
+        const errorMessageDiv = document.getElementById('errorMessage');
         let isLoading = false;
 
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            isLoading = true;
+            if (isLoading) return;
+
+            // Reset UI
+            errorMessageDiv.classList.add('hidden');
+            errorMessageDiv.textContent = '';
             
-            // Update button state
+            isLoading = true;
             submitButton.disabled = true;
             submitButton.textContent = 'Signing in...';
             
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            // Reset button state
-            isLoading = false;
-            submitButton.disabled = false;
-            submitButton.textContent = 'Sign In';
+            const username = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Create form data for 'application/x-www-form-urlencoded'
+            const formData = new URLSearchParams();
+            formData.append('username', username); // The backend endpoint expects a 'username' field
+            formData.append('password', password);
+
+            try {
+                const response = await fetch('/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'An unknown error occurred.');
+                }
+                
+                // --- Success ---
+                // Store the token (e.g., in localStorage) and redirect
+                localStorage.setItem('accessToken', data.access_token);
+                window.location.href = '/v1/dashboard/redirect'; // Redirect to a protected page
+
+            } catch (error) {
+                errorMessageDiv.textContent = error.message;
+                errorMessageDiv.classList.remove('hidden');
+            } finally {
+                isLoading = false;
+                submitButton.disabled = false;
+                submitButton.textContent = 'Sign In';
+            }
         });
     </script>
 </body>

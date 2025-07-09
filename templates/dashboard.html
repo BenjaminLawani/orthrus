@@ -3,580 +3,757 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MatchMySummit Dashboard</title>
+    <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Minimal style to replicate the 'animate-fade-in' class which is likely
+           defined in the project's tailwind.config.js or globals.css */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-white">
 
-    <div id="app-root"></div>
-
-    <script>
-        // --- MOCK DATA ---
-        const mockProfiles = [
-          {
-            id: 1,
-            name: "Sarah Chen",
-            title: "AI Ethics Researcher",
-            company: "Stanford AI Lab",
-            location: "San Francisco, CA",
-            image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&h=300&auto=format&fit=crop",
-            interests: ["AI Ethics", "Sustainable Tech", "Startup Funding"],
-            bio: "Passionate about building ethical AI systems that benefit humanity. Currently researching bias detection in hiring algorithms.",
-            matchScore: 95,
-            mutualConnections: 12,
-            attending: ["AI Summit 2024", "TechCrunch Disrupt"],
-          },
-          {
-            id: 2,
-            name: "Marcus Rodriguez",
-            title: "Product Manager",
-            company: "Meta",
-            location: "Austin, TX",
-            image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400&h=300&auto=format&fit=crop",
-            interests: ["Product Strategy", "AR/VR", "Team Leadership"],
-            bio: "Leading product development for next-gen AR experiences. Love connecting with fellow product enthusiasts and founders.",
-            matchScore: 88,
-            mutualConnections: 8,
-            attending: ["Product Con", "SXSW Interactive"],
-          },
-          {
-            id: 3,
-            name: "Dr. Priya Patel",
-            title: "Biotech Entrepreneur",
-            company: "GeneTech Solutions",
-            location: "Boston, MA",
-            image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&h=300&auto=format&fit=crop",
-            interests: ["Biotech", "Healthcare Innovation", "Venture Capital"],
-            bio: "Building the future of personalized medicine. Always excited to discuss biotech innovations and funding opportunities.",
-            matchScore: 92,
-            mutualConnections: 15,
-            attending: ["BioTech Summit", "Healthcare Innovation Forum"],
-          },
-        ];
-
-        const mockMatches = [
-          {
-            id: 1,
-            name: "Alex Thompson",
-            title: "Frontend Developer",
-            company: "Stripe",
-            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=60&h=60&auto=format&fit=crop",
-            matchScore: 89,
-            lastMessage: "Thanks for the great conversation about React patterns!",
-            timestamp: "2 hours ago",
-            status: "connected",
-          },
-          {
-            id: 2,
-            name: "Lisa Wang",
-            title: "UX Designer",
-            company: "Airbnb",
-            image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=60&h=60&auto=format&fit=crop",
-            matchScore: 94,
-            lastMessage: "Would love to grab coffee and discuss design systems",
-            timestamp: "1 day ago",
-            status: "pending",
-          },
-          {
-            id: 3,
-            name: "James Miller",
-            title: "Data Scientist",
-            company: "Netflix",
-            image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=60&h=60&auto=format&fit=crop",
-            matchScore: 87,
-            lastMessage: "Interesting insights on ML model optimization!",
-            timestamp: "3 days ago",
-            status: "connected",
-          },
-        ];
-
-        // --- STATE MANAGEMENT ---
-        let state = {
-            activeTab: "home",
-            currentProfileIndex: 0,
-            profiles: mockProfiles,
-        };
-
-        const tabs = [
-            { id: "home", label: "Home", icon: "home" },
-            { id: "matches", label: "Matches", icon: "users" },
-            { id: "connect", label: "Connect", icon: "zap" },
-            { id: "profile", label: "Profile", icon: "user" },
-        ];
-
-
-        // --- EVENT HANDLERS ---
-        function handleSwipe(direction) {
-            if (direction === "right") {
-                console.log("Liked:", state.profiles[state.currentProfileIndex]);
-            } else {
-                console.log("Passed:", state.profiles[state.currentProfileIndex]);
-            }
-
-            if (state.currentProfileIndex < state.profiles.length - 1) {
-                state.currentProfileIndex++;
-            } else {
-                state.currentProfileIndex = 0; // Reset for demonstration
-            }
-            render(); // Re-render the app
-        }
-        
-        function handleTabClick(tabId) {
-            state.activeTab = tabId;
-            render();
-        }
-
-        // --- CONTENT RENDERING FUNCTIONS ---
-        function HomeContent() {
-            return `
-            <div class="max-w-4xl">
-              <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome back, John!</h1>
-                <p class="text-gray-600">Here's what's happening with your networking today.</p>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="rounded-lg border bg-white text-gray-900 shadow-sm">
-                  <div class="p-6">
-                    <div class="flex items-center justify-between">
-                      <div>
-                        <p class="text-sm text-gray-600">New Matches</p>
-                        <p class="text-2xl font-bold text-gray-900">12</p>
-                      </div>
-                      <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                        <i data-lucide="user-plus" class="w-6 h-6 text-blue-600"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="rounded-lg border bg-white text-gray-900 shadow-sm">
-                  <div class="p-6">
-                    <div class="flex items-center justify-between">
-                      <div>
-                        <p class="text-sm text-gray-600">Active Conversations</p>
-                        <p class="text-2xl font-bold text-gray-900">8</p>
-                      </div>
-                      <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                        <i data-lucide="message-circle" class="w-6 h-6 text-green-600"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="rounded-lg border bg-white text-gray-900 shadow-sm">
-                  <div class="p-6">
-                    <div class="flex items-center justify-between">
-                      <div>
-                        <p class="text-sm text-gray-600">Upcoming Meetups</p>
-                        <p class="text-2xl font-bold text-gray-900">3</p>
-                      </div>
-                      <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                        <i data-lucide="coffee" class="w-6 h-6 text-purple-600"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="rounded-lg border bg-white text-gray-900 shadow-sm">
-                  <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
-                    <div class="space-y-4">
-                      <div class="flex items-center space-x-3">
-                        <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                          <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=40&h=40&auto=format&fit=crop" />
-                        </span>
-                        <div class="flex-1">
-                          <p class="text-sm font-medium text-gray-900">Sarah Chen liked your profile</p>
-                          <p class="text-xs text-gray-500">2 hours ago</p>
-                        </div>
-                      </div>
-                      <div class="flex items-center space-x-3">
-                        <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                           <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=40&h=40&auto=format&fit=crop" />
-                        </span>
-                        <div class="flex-1">
-                          <p class="text-sm font-medium text-gray-900">New message from Marcus Rodriguez</p>
-                          <p class="text-xs text-gray-500">4 hours ago</p>
-                        </div>
-                      </div>
-                      <div class="flex items-center space-x-3">
-                        <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                           <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=40&h=40&auto=format&fit=crop" />
-                        </span>
-                        <div class="flex-1">
-                          <p class="text-sm font-medium text-gray-900">Dr. Priya Patel wants to connect</p>
-                          <p class="text-xs text-gray-500">1 day ago</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="rounded-lg border bg-white text-gray-900 shadow-sm">
-                   <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming Events</h3>
-                    <div class="space-y-4">
-                      <div class="flex items-start space-x-3">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <i data-lucide="calendar" class="w-6 h-6 text-blue-600"></i>
-                        </div>
-                        <div class="flex-1">
-                          <p class="text-sm font-medium text-gray-900">AI Summit 2024</p>
-                          <p class="text-xs text-gray-500">Tomorrow, 9:00 AM</p>
-                          <p class="text-xs text-gray-500">San Francisco, CA</p>
-                        </div>
-                      </div>
-                      <div class="flex items-start space-x-3">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                          <i data-lucide="calendar" class="w-6 h-6 text-green-600"></i>
-                        </div>
-                        <div class="flex-1">
-                          <p class="text-sm font-medium text-gray-900">TechCrunch Disrupt</p>
-                          <p class="text-xs text-gray-500">Next week, 10:00 AM</p>
-                          <p class="text-xs text-gray-500">San Francisco, CA</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            `;
-        }
-
-        function MatchesContent({ matches }) {
-            return `
-            <div class="max-w-4xl">
-              <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Your Matches</h1>
-                <p class="text-gray-600">Connect with people who share your interests and goals.</p>
-              </div>
-
-              <div class="mb-6">
-                <div class="relative">
-                  <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
-                  <input placeholder="Search matches..." class="pl-10 flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-                </div>
-              </div>
-
-              <div class="space-y-4">
-                ${matches.map(match => `
-                  <div class="rounded-lg border bg-white text-gray-900 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="p-6">
-                      <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                          <span class="relative flex h-16 w-16 shrink-0 overflow-hidden rounded-full">
-                            <img class="aspect-square h-full w-full" src="${match.image}" />
-                            <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">${match.name.split(" ").map(n => n[0]).join("")}</span>
-                          </span>
-                          <div class="flex-1">
-                            <div class="flex items-center space-x-2 mb-1">
-                              <h3 class="text-lg font-semibold text-gray-900">${match.name}</h3>
-                              <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-gray-100 text-gray-800">
-                                ${match.matchScore}% match
-                              </div>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-1">
-                              ${match.title} at ${match.company}
-                            </p>
-                            <p class="text-sm text-gray-500">${match.lastMessage}</p>
-                            <p class="text-xs text-gray-400 mt-1">${match.timestamp}</p>
-                          </div>
-                        </div>
-                        <div class="flex space-x-2">
-                           <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">
-                            View Profile
-                           </button>
-                           <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gray-900 text-white hover:bg-gray-900/90 h-9 px-3">
-                            Message
-                           </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-            `;
-        }
-
-        function ConnectContent({ profiles, currentIndex }) {
-            if (currentIndex >= profiles.length) {
-                return `
-                <div class="max-w-md mx-auto text-center py-20">
-                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i data-lucide="users" class="w-8 h-8 text-gray-400"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-2">No more profiles</h2>
-                    <p class="text-gray-600 mb-6">Check back later for new networking opportunities!</p>
-                    <button onClick="window.location.reload()" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gray-900 text-white hover:bg-gray-900/90 h-10 px-4 py-2">
-                      Refresh
-                    </button>
-                </div>
-                `;
-            }
-
-            const currentProfile = profiles[currentIndex];
-
-            return `
-            <div class="max-w-md mx-auto">
-              <div class="mb-8 text-center">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Discover Connections</h1>
-                <p class="text-gray-600">Swipe right to connect, left to pass</p>
-              </div>
-
-              <div class="relative">
-                <div class="rounded-lg border bg-white text-gray-900 shadow-xl overflow-hidden">
-                  <div class="relative h-96 bg-gray-200">
-                    <img
-                      src="${currentProfile.image}"
-                      alt="${currentProfile.name}"
-                      class="w-full h-full object-cover"
-                    />
-                    <div class="absolute top-4 right-4">
-                      <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-green-500 text-white">
-                        <i data-lucide="star" class="w-3 h-3 mr-1"></i>
-                        ${currentProfile.matchScore}% match
-                      </div>
-                    </div>
-                  </div>
-                  <div class="p-6">
-                    <div class="mb-4">
-                      <h2 class="text-2xl font-bold text-gray-900 mb-1">${currentProfile.name}</h2>
-                      <p class="text-gray-600 mb-2">
-                        ${currentProfile.title} at ${currentProfile.company}
-                      </p>
-                      <div class="flex items-center text-sm text-gray-500 mb-3">
-                        <i data-lucide="map-pin" class="w-4 h-4 mr-1"></i>
-                        ${currentProfile.location}
-                      </div>
-                    </div>
-
-                    <div class="mb-4">
-                      <p class="text-sm text-gray-700 leading-relaxed">${currentProfile.bio}</p>
-                    </div>
-
-                    <div class="mb-4">
-                      <p class="text-sm font-medium text-gray-900 mb-2">Interests</p>
-                      <div class="flex flex-wrap gap-2">
-                        ${currentProfile.interests.map(interest => `
-                          <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-gray-100 text-gray-800">
-                            ${interest}
-                          </div>
-                        `).join('')}
-                      </div>
-                    </div>
-
-                    <div class="mb-6">
-                      <p class="text-sm font-medium text-gray-900 mb-2">Also Attending</p>
-                      <div class="space-y-1">
-                        ${currentProfile.attending.map(event => `
-                          <div class="flex items-center text-sm text-gray-600">
-                            <i data-lucide="calendar" class="w-3 h-3 mr-2"></i>
-                            ${event}
-                          </div>
-                        `).join('')}
-                      </div>
-                    </div>
-
-                    <div class="flex items-center justify-between text-sm text-gray-500 mb-6">
-                      <div class="flex items-center">
-                        <i data-lucide="users" class="w-4 h-4 mr-1"></i>
-                        ${currentProfile.mutualConnections} mutual connections
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex justify-center space-x-6 mt-6">
-                  <button
-                    class="w-16 h-16 rounded-full border-red-200 hover:bg-red-50 hover:border-red-300 bg-transparent inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border"
-                    onclick="handleSwipe('left')"
-                  >
-                    <i data-lucide="x" class="w-6 h-6 text-red-500"></i>
-                  </button>
-                  <button
-                    class="w-16 h-16 rounded-full bg-green-500 hover:bg-green-600 inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-                    onclick="handleSwipe('right')"
-                  >
-                    <i data-lucide="heart" class="w-6 h-6 text-white"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="mt-8 text-center">
-                <p class="text-sm text-gray-500">
-                  ${currentIndex + 1} of ${profiles.length} profiles
-                </p>
-                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
-                  <div
-                    class="bg-gray-900 h-1 rounded-full transition-all duration-300"
-                    style="width: ${((currentIndex + 1) / profiles.length) * 100}%"
-                  ></div>
-                </div>
-              </div>
-            </div>
-            `;
-        }
-
-        function ProfileContent() {
-            return `
-            <div class="max-w-2xl">
-              <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Your Profile</h1>
-                <p class="text-gray-600">Manage your networking profile and preferences.</p>
-              </div>
-
-              <div class="rounded-lg border bg-white text-gray-900 shadow-sm mb-8">
-                <div class="p-6">
-                  <div class="flex items-start space-x-6">
-                    <span class="relative flex h-24 w-24 shrink-0 overflow-hidden rounded-full">
-                      <img class="aspect-square h-full w-full" src="https://i.pravatar.cc/96?u=john-doe" />
-                      <span class="text-2xl flex h-full w-full items-center justify-center rounded-full bg-gray-100">JD</span>
-                    </span>
-                    <div class="flex-1">
-                      <h2 class="text-2xl font-bold text-gray-900 mb-2">John Doe</h2>
-                      <p class="text-gray-600 mb-2">Senior Software Engineer at Google</p>
-                      <div class="flex items-center text-sm text-gray-500 mb-4">
-                        <i data-lucide="map-pin" class="w-4 h-4 mr-1"></i>
-                        San Francisco, CA
-                      </div>
-                      <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                        Edit Profile
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="rounded-lg border bg-white text-gray-900 shadow-sm">
-                  <div class="p-6 flex flex-col">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Networking Stats</h3>
-                    <div class="space-y-4">
-                      <div class="flex justify-between">
-                        <span class="text-gray-600">Profile Views</span>
-                        <span class="font-semibold">127</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span class="text-gray-600">Connections Made</span>
-                        <span class="font-semibold">43</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span class="text-gray-600">Events Attended</span>
-                        <span class="font-semibold">12</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span class="text-gray-600">Match Success Rate</span>
-                        <span class="font-semibold">78%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="rounded-lg border bg-white text-gray-900 shadow-sm">
-                  <div class="p-6 flex flex-col">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Interests</h3>
-                    <div class="flex flex-wrap gap-2">
-                        ${["Machine Learning", "Startup Funding", "Product Strategy", "Team Leadership", "Open Source"].map(interest => `
-                          <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-gray-100 text-gray-800">
-                            ${interest}
-                          </div>
-                        `).join('')}
-                    </div>
-                    <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 px-3 mt-4">
-                      Edit Interests
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            `;
-        }
-
-        // --- MAIN RENDER FUNCTION ---
-        function render() {
-            let tabContentHtml = '';
-            switch (state.activeTab) {
-                case "home":
-                    tabContentHtml = HomeContent();
-                    break;
-                case "matches":
-                    tabContentHtml = MatchesContent({ matches: mockMatches });
-                    break;
-                case "connect":
-                    tabContentHtml = ConnectContent({ profiles: state.profiles, currentIndex: state.currentProfileIndex });
-                    break;
-                case "profile":
-                    tabContentHtml = ProfileContent();
-                    break;
-                default:
-                    tabContentHtml = HomeContent();
-            }
-
-            const appHtml = `
-            <div class="min-h-screen bg-gray-50">
-              <header class="bg-white border-b border-gray-200 px-6 py-4">
-                <div class="flex items-center justify-between">
-                  <a href="#" class="text-2xl font-bold text-gray-900">
+    <div id="app-container" class="min-h-screen bg-white">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-100 px-8 py-6">
+            <div class="flex items-center justify-between">
+                <a href="/" class="text-2xl font-bold text-black">
                     MatchMySummit
-                  </a>
-                  <div class="flex items-center space-x-4">
-                    <button class="inline-flex items-center justify-center rounded-md text-sm font-medium h-9 w-9 bg-transparent hover:bg-gray-100">
-                      <i data-lucide="bell" class="w-5 h-5"></i>
+                </a>
+                <div class="flex items-center space-x-6">
+                    <button class="p-2 rounded-md hover:bg-gray-50 transition-colors duration-200">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
                     </button>
-                    <button class="inline-flex items-center justify-center rounded-md text-sm font-medium h-9 w-9 bg-transparent hover:bg-gray-100">
-                      <i data-lucide="settings" class="w-5 h-5"></i>
+                    <button class="p-2 rounded-md hover:bg-gray-50 transition-colors duration-200">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
                     </button>
-                    <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-full">
-                        <img class="aspect-square h-full w-full" src="https://i.pravatar.cc/32?u=john-doe">
+                    <div class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-full">
+                        <img class="aspect-square h-full w-full" src="/placeholder.svg?height=32&width=32" />
                         <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">JD</span>
-                    </span>
-                  </div>
-                </div>
-              </header>
-
-              <div class="flex">
-                <aside class="w-64 bg-white border-r border-gray-200 min-h-screen">
-                  <nav class="p-6">
-                    <div class="space-y-2">
-                        ${tabs.map(tab => {
-                            const isActive = state.activeTab === tab.id;
-                            const activeClasses = "bg-gray-900 text-white";
-                            const inactiveClasses = "text-gray-600 hover:bg-gray-100 hover:text-gray-900";
-                            return `
-                              <button
-                                onclick="handleTabClick('${tab.id}')"
-                                class="w-full flex items-center px-4 py-3 text-left rounded-lg transition-colors ${isActive ? activeClasses : inactiveClasses}"
-                              >
-                                <i data-lucide="${tab.icon}" class="w-5 h-5 mr-3"></i>
-                                ${tab.label}
-                              </button>
-                            `
-                        }).join('')}
                     </div>
-                  </nav>
-                </aside>
-                
-                <main class="flex-1 p-8">
-                  ${tabContentHtml}
-                </main>
-              </div>
+                </div>
             </div>
-            `;
+        </header>
 
-            document.getElementById('app-root').innerHTML = appHtml;
-            lucide.createIcons(); // This function from the lucide script finds all `data-lucide` attributes and replaces them with SVG icons.
+        <div class="flex">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white min-h-screen">
+                <nav class="p-8">
+                    <div class="space-y-1">
+                        <button data-tab-id="home" class="sidebar-tab w-full flex items-center px-4 py-4 text-left rounded-lg transition-all duration-200 bg-black text-white">
+                            <i data-lucide="home" class="w-5 h-5 mr-3"></i>
+                            Home
+                        </button>
+                        <button data-tab-id="matches" class="sidebar-tab w-full flex items-center px-4 py-4 text-left rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-black">
+                            <i data-lucide="users" class="w-5 h-5 mr-3"></i>
+                            Matches
+                        </button>
+                        <button data-tab-id="connect" class="sidebar-tab w-full flex items-center px-4 py-4 text-left rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-black">
+                            <i data-lucide="zap" class="w-5 h-5 mr-3"></i>
+                            Connect
+                        </button>
+                        <button data-tab-id="profile" class="sidebar-tab w-full flex items-center px-4 py-4 text-left rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-black">
+                            <i data-lucide="user" class="w-5 h-5 mr-3"></i>
+                            Profile
+                        </button>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-12 bg-white">
+                <div id="home-content" class="tab-content">
+                    <!-- HomeContent is statically rendered here -->
+                    <div class="max-w-6xl animate-fade-in">
+                        <div class="mb-12">
+                            <h1 class="text-4xl font-bold text-black mb-3">Welcome back, John</h1>
+                            <p class="text-gray-600 text-lg">Here's your networking overview for today.</p>
+                        </div>
+
+                        <!-- Matches Section -->
+                        <div class="mb-16">
+                            <div class="flex items-center justify-between mb-8">
+                                <h2 class="text-2xl font-bold text-black">Matches</h2>
+                                <a href="#" id="view-all-matches-link" class="text-gray-600 hover:text-black transition-colors">
+                                    View all matches →
+                                </a>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                                <div class="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                                    <div class="text-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i data-lucide="user-plus" class="w-6 h-6 text-black"></i>
+                                        </div>
+                                        <p class="text-3xl font-bold text-black mb-2">12</p>
+                                        <p class="text-gray-500 text-sm">New Matches</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                                    <div class="text-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i data-lucide="users" class="w-6 h-6 text-black"></i>
+                                        </div>
+                                        <p class="text-3xl font-bold text-black mb-2">127</p>
+                                        <p class="text-gray-500 text-sm">Total Matches</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                                    <div class="text-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i data-lucide="star" class="w-6 h-6 text-black"></i>
+                                        </div>
+                                        <p class="text-3xl font-bold text-black mb-2">94%</p>
+                                        <p class="text-gray-500 text-sm">Match Quality</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                                    <div class="text-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i data-lucide="heart" class="w-6 h-6 text-black"></i>
+                                        </div>
+                                        <p class="text-3xl font-bold text-black mb-2">78%</p>
+                                        <p class="text-gray-500 text-sm">Success Rate</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-100 rounded-2xl p-8">
+                                <h3 class="text-lg font-semibold text-black mb-6">Recent Matches</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full">
+                                                <img class="aspect-square h-full w-full" src="/placeholder.svg?height=48&width=48">
+                                                <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">SC</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-black">Sarah Chen</p>
+                                                <p class="text-sm text-gray-500">AI Ethics Researcher • 95% match</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-3 bg-white hover:bg-gray-50">View</button>
+                                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-primary-foreground shadow h-9 px-3 bg-black hover:bg-gray-800 text-white">Connect</button>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                             <div class="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full">
+                                                <img class="aspect-square h-full w-full" src="/placeholder.svg?height=48&width=48">
+                                                <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">MR</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-black">Marcus Rodriguez</p>
+                                                <p class="text-sm text-gray-500">Product Manager • 88% match</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-3 bg-white hover:bg-gray-50">View</button>
+                                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-primary-foreground shadow h-9 px-3 bg-black hover:bg-gray-800 text-white">Connect</button>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full">
+                                                <img class="aspect-square h-full w-full" src="/placeholder.svg?height=48&width=48">
+                                                <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">PP</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-black">Dr. Priya Patel</p>
+                                                <p class="text-sm text-gray-500">Biotech Entrepreneur • 92% match</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-3 bg-white hover:bg-gray-50">View</button>
+                                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-primary-foreground shadow h-9 px-3 bg-black hover:bg-gray-800 text-white">Connected</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Messaging Section -->
+                        <div class="mb-16">
+                            <div class="flex items-center justify-between mb-8">
+                                <h2 class="text-2xl font-bold text-black">Messaging</h2>
+                                <a href="#" class="text-gray-600 hover:text-black transition-colors">
+                                    View all conversations →
+                                </a>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                <div class="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                                    <div class="text-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i data-lucide="message-circle" class="w-6 h-6 text-black"></i>
+                                        </div>
+                                        <p class="text-3xl font-bold text-black mb-2">8</p>
+                                        <p class="text-gray-500 text-sm">Active Conversations</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                                    <div class="text-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i data-lucide="bell" class="w-6 h-6 text-black"></i>
+                                        </div>
+                                        <p class="text-3xl font-bold text-black mb-2">3</p>
+                                        <p class="text-gray-500 text-sm">Unread Messages</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                                    <div class="text-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i data-lucide="coffee" class="w-6 h-6 text-black"></i>
+                                        </div>
+                                        <p class="text-3xl font-bold text-black mb-2">5</p>
+                                        <p class="text-gray-500 text-sm">Meetup Requests</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-100 rounded-2xl p-8">
+                                <h3 class="text-lg font-semibold text-black mb-6">Recent Messages</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-4 p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <div class="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full">
+                                            <img class="aspect-square h-full w-full" src="/placeholder.svg?height=48&width=48">
+                                            <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">AT</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <p class="font-medium text-black">Alex Thompson</p>
+                                                <p class="text-xs text-gray-400">2 hours ago</p>
+                                            </div>
+                                            <p class="text-sm text-gray-600">Thanks for the great conversation about React patterns!</p>
+                                        </div>
+                                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    </div>
+                                    <div class="flex items-center space-x-4 p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <div class="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full">
+                                            <img class="aspect-square h-full w-full" src="/placeholder.svg?height=48&width=48">
+                                            <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">LW</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <p class="font-medium text-black">Lisa Wang</p>
+                                                <p class="text-xs text-gray-400">1 day ago</p>
+                                            </div>
+                                            <p class="text-sm text-gray-600">Would love to grab coffee and discuss design systems</p>
+                                        </div>
+                                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    </div>
+                                    <div class="flex items-center space-x-4 p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <div class="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full">
+                                            <img class="aspect-square h-full w-full" src="/placeholder.svg?height=48&width=48">
+                                            <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">JM</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <p class="font-medium text-black">James Miller</p>
+                                                <p class="text-xs text-gray-400">3 days ago</p>
+                                            </div>
+                                            <p class="text-sm text-gray-600">Interesting insights on ML model optimization!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Events Section -->
+                        <div class="mb-16">
+                            <div class="flex items-center justify-between mb-8">
+                                <h2 class="text-2xl font-bold text-black">Events</h2>
+                                <a href="#" class="text-gray-600 hover:text-black transition-colors">
+                                    View all events →
+                                </a>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                <div class="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                                    <div class="text-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i data-lucide="calendar" class="w-6 h-6 text-black"></i>
+                                        </div>
+                                        <p class="text-3xl font-bold text-black mb-2">3</p>
+                                        <p class="text-gray-500 text-sm">Upcoming Events</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                                    <div class="text-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i data-lucide="users" class="w-6 h-6 text-black"></i>
+                                        </div>
+                                        <p class="text-3xl font-bold text-black mb-2">47</p>
+                                        <p class="text-gray-500 text-sm">Event Connections</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                                    <div class="text-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i data-lucide="coffee" class="w-6 h-6 text-black"></i>
+                                        </div>
+                                        <p class="text-3xl font-bold text-black mb-2">12</p>
+                                        <p class="text-gray-500 text-sm">Scheduled Meetups</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div class="bg-white border border-gray-100 rounded-2xl p-8">
+                                    <h3 class="text-lg font-semibold text-black mb-6">Upcoming Events</h3>
+                                    <div class="space-y-6">
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center">
+                                                <i data-lucide="calendar" class="w-6 h-6 text-black"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="font-medium text-black">AI Summit 2024</p>
+                                                <p class="text-sm text-gray-500 mb-1">Tomorrow, 9:00 AM - 6:00 PM</p>
+                                                <p class="text-sm text-gray-500 mb-2">San Francisco, CA</p>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-foreground bg-gray-100 text-black">23 matches attending</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center">
+                                                <i data-lucide="calendar" class="w-6 h-6 text-black"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="font-medium text-black">TechCrunch Disrupt</p>
+                                                <p class="text-sm text-gray-500 mb-1">Next week, 10:00 AM - 8:00 PM</p>
+                                                <p class="text-sm text-gray-500 mb-2">San Francisco, CA</p>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-foreground bg-gray-100 text-black">15 matches attending</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center">
+                                                <i data-lucide="calendar" class="w-6 h-6 text-black"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="font-medium text-black">Product Con 2024</p>
+                                                <p class="text-sm text-gray-500 mb-1">March 15, 9:00 AM - 5:00 PM</p>
+                                                <p class="text-sm text-gray-500 mb-2">Austin, TX</p>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-foreground bg-gray-100 text-black">9 matches attending</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-gray-100 rounded-2xl p-8">
+                                    <h3 class="text-lg font-semibold text-black mb-6">Scheduled Meetups</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                                                    <img class="aspect-square h-full w-full" src="/placeholder.svg?height=40&width=40">
+                                                    <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">SC</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-black text-sm">Coffee with Sarah Chen</p>
+                                                    <p class="text-xs text-gray-500">Today, 3:30 PM</p>
+                                                </div>
+                                            </div>
+                                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-3 bg-white hover:bg-gray-100">View</button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                                                    <img class="aspect-square h-full w-full" src="/placeholder.svg?height=40&width=40">
+                                                    <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">MR</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-black text-sm">Lunch with Marcus Rodriguez</p>
+                                                    <p class="text-xs text-gray-500">Tomorrow, 12:00 PM</p>
+                                                </div>
+                                            </div>
+                                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-3 bg-white hover:bg-gray-100">View</button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                                                    <img class="aspect-square h-full w-full" src="/placeholder.svg?height=40&width=40">
+                                                    <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">PP</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-black text-sm">Panel Discussion with Dr. Priya Patel</p>
+                                                    <p class="text-xs text-gray-500">Friday, 2:00 PM</p>
+                                                </div>
+                                            </div>
+                                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-3 bg-white hover:bg-gray-100">View</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="matches-content" class="tab-content hidden">
+                    <div class="max-w-5xl animate-fade-in">
+                        <div class="mb-12">
+                            <h1 class="text-4xl font-bold text-black mb-3">Your Matches</h1>
+                            <p class="text-gray-600 text-lg">Connect with people who share your interests and goals.</p>
+                        </div>
+                        <div class="mb-8">
+                            <div class="relative">
+                                <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                                <input placeholder="Search matches..." class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-12 h-14 text-base border-gray-200 focus:border-black focus:ring-0 bg-white" />
+                            </div>
+                        </div>
+                        <div id="matches-list-container" class="space-y-6">
+                            <!-- Matches will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="connect-content" class="tab-content hidden">
+                    <div id="connect-profile-view" class="max-w-md mx-auto animate-fade-in">
+                        <div class="mb-12 text-center">
+                            <h1 class="text-4xl font-bold text-black mb-3">Discover Connections</h1>
+                            <p class="text-gray-600 text-lg">Swipe right to connect, left to pass</p>
+                        </div>
+
+                        <div class="relative">
+                            <div class="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-xl transform transition-all duration-300 hover:shadow-2xl">
+                                <div class="relative h-96 bg-gray-100">
+                                    <img id="profile-image" src="" alt="" class="w-full h-full object-cover" />
+                                    <div class="absolute top-6 right-6">
+                                        <span id="profile-match-score" class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-black text-white border-0">
+                                            <i data-lucide="star" class="w-3 h-3 mr-1 fill-current"></i>
+                                            <span></span>% match
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-8">
+                                    <div class="mb-6">
+                                        <h2 id="profile-name" class="text-2xl font-bold text-black mb-2"></h2>
+                                        <p id="profile-title" class="text-gray-600 mb-3"></p>
+                                        <div class="flex items-center text-gray-500 mb-4">
+                                            <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>
+                                            <span id="profile-location"></span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-6">
+                                        <p id="profile-bio" class="text-gray-700 leading-relaxed"></p>
+                                    </div>
+                                    <div class="mb-6">
+                                        <p class="font-medium text-black mb-3">Interests</p>
+                                        <div id="profile-interests" class="flex flex-wrap gap-2"></div>
+                                    </div>
+                                    <div class="mb-8">
+                                        <p class="font-medium text-black mb-3">Also Attending</p>
+                                        <div id="profile-attending" class="space-y-2"></div>
+                                    </div>
+                                    <div class="flex items-center justify-between text-gray-500 mb-6">
+                                        <div class="flex items-center">
+                                            <i data-lucide="users" class="w-4 h-4 mr-2"></i>
+                                            <span id="profile-mutual"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-center space-x-8 mt-8">
+                                <button id="swipe-left-button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-11 px-8 w-16 h-16 rounded-full border-gray-200 hover:bg-gray-50 hover:border-gray-300 bg-white transition-all duration-200 transform hover:scale-110">
+                                    <i data-lucide="x" class="w-6 h-6 text-gray-600"></i>
+                                </button>
+                                <button id="swipe-right-button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-primary-foreground shadow h-11 px-8 w-16 h-16 rounded-full bg-black hover:bg-gray-800 transition-all duration-200 transform hover:scale-110 text-white">
+                                    <i data-lucide="heart" class="w-6 h-6 text-white fill-current"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-12 text-center">
+                            <p id="profile-progress-text" class="text-gray-500 mb-3"></p>
+                            <div class="w-full bg-gray-100 rounded-full h-1">
+                                <div id="profile-progress-bar" class="bg-black h-1 rounded-full transition-all duration-300" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="connect-finished-view" class="hidden max-w-md mx-auto text-center py-20 animate-fade-in">
+                        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i data-lucide="users" class="w-8 h-8 text-gray-400"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-black mb-3">No more profiles</h2>
+                        <p class="text-gray-600 mb-8 text-lg">Check back later for new networking opportunities!</p>
+                        <button id="refresh-profiles-button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-primary-foreground shadow bg-black hover:bg-gray-800 text-white h-10 px-4 py-2">
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div id="profile-content" class="tab-content hidden">
+                    <!-- ProfileContent is statically rendered here -->
+                     <div class="max-w-3xl animate-fade-in">
+                        <div class="mb-12">
+                            <h1 class="text-4xl font-bold text-black mb-3">Your Profile</h1>
+                            <p class="text-gray-600 text-lg">Manage your networking profile and preferences.</p>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-2xl p-8 mb-12">
+                            <div class="flex items-start space-x-8">
+                                <div class="relative flex h-24 w-24 shrink-0 overflow-hidden rounded-full">
+                                    <img class="aspect-square h-full w-full" src="/placeholder.svg?height=96&width=96">
+                                    <span class="text-2xl flex h-full w-full items-center justify-center rounded-full bg-gray-100">JD</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h2 class="text-3xl font-bold text-black mb-3">John Doe</h2>
+                                    <p class="text-gray-600 mb-3 text-lg">Senior Software Engineer at Google</p>
+                                    <div class="flex items-center text-gray-500 mb-6">
+                                        <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>
+                                        San Francisco, CA
+                                    </div>
+                                    <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input shadow-sm h-10 px-4 py-2 bg-white hover:bg-gray-50">
+                                        Edit Profile
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-white border border-gray-100 rounded-2xl p-8">
+                                <h3 class="text-xl font-semibold text-black mb-6">Networking Stats</h3>
+                                <div class="space-y-6">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Profile Views</span>
+                                        <span class="font-semibold text-black text-lg">127</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Connections Made</span>
+                                        <span class="font-semibold text-black text-lg">43</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Events Attended</span>
+                                        <span class="font-semibold text-black text-lg">12</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600">Match Success Rate</span>
+                                        <span class="font-semibold text-black text-lg">78%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white border border-gray-100 rounded-2xl p-8">
+                                <h3 class="text-xl font-semibold text-black mb-6">Interests</h3>
+                                <div class="flex flex-wrap gap-3 mb-6">
+                                    <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-foreground bg-gray-100 text-black">Machine Learning</span>
+                                    <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-foreground bg-gray-100 text-black">Startup Funding</span>
+                                    <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-foreground bg-gray-100 text-black">Product Strategy</span>
+                                    <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-foreground bg-gray-100 text-black">Team Leadership</span>
+                                    <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-foreground bg-gray-100 text-black">Open Source</span>
+                                </div>
+                                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input shadow-sm h-9 px-3 bg-white hover:bg-gray-50">
+                                    Edit Interests
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- DATA ---
+    const mockProfiles = [
+      {
+        id: 1, name: "Sarah Chen", title: "AI Ethics Researcher", company: "Stanford AI Lab", location: "San Francisco, CA", image: "/placeholder.svg?height=400&width=300", interests: ["AI Ethics", "Sustainable Tech", "Startup Funding"], bio: "Passionate about building ethical AI systems that benefit humanity. Currently researching bias detection in hiring algorithms.", matchScore: 95, mutualConnections: 12, attending: ["AI Summit 2024", "TechCrunch Disrupt"],
+      },
+      {
+        id: 2, name: "Marcus Rodriguez", title: "Product Manager", company: "Meta", location: "Austin, TX", image: "/placeholder.svg?height=400&width=300", interests: ["Product Strategy", "AR/VR", "Team Leadership"], bio: "Leading product development for next-gen AR experiences. Love connecting with fellow product enthusiasts and founders.", matchScore: 88, mutualConnections: 8, attending: ["Product Con", "SXSW Interactive"],
+      },
+      {
+        id: 3, name: "Dr. Priya Patel", title: "Biotech Entrepreneur", company: "GeneTech Solutions", location: "Boston, MA", image: "/placeholder.svg?height=400&width=300", interests: ["Biotech", "Healthcare Innovation", "Venture Capital"], bio: "Building the future of personalized medicine. Always excited to discuss biotech innovations and funding opportunities.", matchScore: 92, mutualConnections: 15, attending: ["BioTech Summit", "Healthcare Innovation Forum"],
+      },
+    ];
+
+    const mockMatches = [
+      { id: 1, name: "Alex Thompson", title: "Frontend Developer", company: "Stripe", image: "/placeholder.svg?height=60&width=60", matchScore: 89, lastMessage: "Thanks for the great conversation about React patterns!", timestamp: "2 hours ago", status: "connected" },
+      { id: 2, name: "Lisa Wang", title: "UX Designer", company: "Airbnb", image: "/placeholder.svg?height=60&width=60", matchScore: 94, lastMessage: "Would love to grab coffee and discuss design systems", timestamp: "1 day ago", status: "pending" },
+      { id: 3, name: "James Miller", title: "Data Scientist", company: "Netflix", image: "/placeholder.svg?height=60&width=60", matchScore: 87, lastMessage: "Interesting insights on ML model optimization!", timestamp: "3 days ago", status: "connected" },
+    ];
+
+    // --- STATE ---
+    let activeTab = "home";
+    let currentProfileIndex = 0;
+
+    // --- DOM ELEMENTS ---
+    const sidebarTabs = document.querySelectorAll('.sidebar-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const matchesListContainer = document.getElementById('matches-list-container');
+    const swipeLeftButton = document.getElementById('swipe-left-button');
+    const swipeRightButton = document.getElementById('swipe-right-button');
+    const connectProfileView = document.getElementById('connect-profile-view');
+    const connectFinishedView = document.getElementById('connect-finished-view');
+    const refreshProfilesButton = document.getElementById('refresh-profiles-button');
+    const viewAllMatchesLink = document.getElementById('view-all-matches-link');
+
+    // --- RENDER FUNCTIONS ---
+    function updateView() {
+        // Hide all tab contents
+        tabContents.forEach(content => content.classList.add('hidden'));
+        
+        // Show the active one
+        const activeContent = document.getElementById(`${activeTab}-content`);
+        if (activeContent) {
+            activeContent.classList.remove('hidden');
         }
 
-        // Initial render on page load
-        render();
+        // Update sidebar button styles
+        sidebarTabs.forEach(button => {
+            if (button.dataset.tabId === activeTab) {
+                button.classList.add('bg-black', 'text-white');
+                button.classList.remove('text-gray-600', 'hover:bg-gray-50', 'hover:text-black');
+            } else {
+                button.classList.remove('bg-black', 'text-white');
+                button.classList.add('text-gray-600', 'hover:bg-gray-50', 'hover:text-black');
+            }
+        });
+    }
 
-    </script>
+    function renderMatches() {
+        if (!matchesListContainer) return;
+        let html = '';
+        mockMatches.forEach((match, index) => {
+            const fallback = match.name.split(" ").map(n => n[0]).join("");
+            html += `
+                <div class="bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1" style="animation-delay: ${index * 100}ms">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-6">
+                            <div class="relative flex h-16 w-16 shrink-0 overflow-hidden rounded-full">
+                                <img class="aspect-square h-full w-full" src="${match.image || '/placeholder.svg'}" />
+                                <span class="flex h-full w-full items-center justify-center rounded-full bg-gray-100">${fallback}</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-xl font-semibold text-black">${match.name}</h3>
+                                    <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-foreground text-xs bg-gray-100 text-black">${match.matchScore}% match</span>
+                                </div>
+                                <p class="text-gray-600 mb-2">${match.title} at ${match.company}</p>
+                                <p class="text-gray-500">${match.lastMessage}</p>
+                                <p class="text-xs text-gray-400 mt-2">${match.timestamp}</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input shadow-sm h-9 px-3 bg-white hover:bg-gray-50">View Profile</button>
+                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-primary-foreground shadow h-9 px-3 bg-black hover:bg-gray-800 text-white">Message</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        matchesListContainer.innerHTML = html;
+    }
+
+    function renderConnectProfile() {
+        if (currentProfileIndex >= mockProfiles.length) {
+            connectProfileView.classList.add('hidden');
+            connectFinishedView.classList.remove('hidden');
+            return;
+        }
+
+        connectProfileView.classList.remove('hidden');
+        connectFinishedView.classList.add('hidden');
+        
+        const profile = mockProfiles[currentProfileIndex];
+        
+        document.getElementById('profile-image').src = profile.image;
+        document.getElementById('profile-image').alt = profile.name;
+        document.querySelector('#profile-match-score span').textContent = profile.matchScore;
+        document.getElementById('profile-name').textContent = profile.name;
+        document.getElementById('profile-title').textContent = `${profile.title} at ${profile.company}`;
+        document.getElementById('profile-location').textContent = profile.location;
+        document.getElementById('profile-bio').textContent = profile.bio;
+        document.getElementById('profile-mutual').textContent = `${profile.mutualConnections} mutual connections`;
+
+        const interestsContainer = document.getElementById('profile-interests');
+        interestsContainer.innerHTML = profile.interests.map(interest => 
+            `<span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-foreground bg-gray-100 text-black">${interest}</span>`
+        ).join('');
+
+        const attendingContainer = document.getElementById('profile-attending');
+        attendingContainer.innerHTML = profile.attending.map(event =>
+            `<div class="flex items-center text-gray-600">
+                <i data-lucide="calendar" class="w-4 h-4 mr-3"></i>
+                ${event}
+            </div>`
+        ).join('');
+        
+        document.getElementById('profile-progress-text').textContent = `${currentProfileIndex + 1} of ${mockProfiles.length} profiles`;
+        const progressPercentage = ((currentProfileIndex + 1) / mockProfiles.length) * 100;
+        document.getElementById('profile-progress-bar').style.width = `${progressPercentage}%`;
+
+        // Re-render icons for dynamic content
+        lucide.createIcons();
+    }
+
+
+    // --- EVENT HANDLERS ---
+    function handleTabClick(e) {
+        const tabId = e.currentTarget.dataset.tabId;
+        activeTab = tabId;
+        updateView();
+    }
+
+    function handleSwipe(direction) {
+        if (currentProfileIndex >= mockProfiles.length) return;
+
+        if (direction === "right") {
+          console.log("Liked:", mockProfiles[currentProfileIndex]);
+        } else {
+          console.log("Passed:", mockProfiles[currentProfileIndex]);
+        }
+
+        currentProfileIndex++;
+        renderConnectProfile();
+    }
+
+    // --- EVENT LISTENERS ---
+    sidebarTabs.forEach(button => button.addEventListener('click', handleTabClick));
+    
+    swipeLeftButton.addEventListener('click', () => handleSwipe('left'));
+    swipeRightButton.addEventListener('click', () => handleSwipe('right'));
+    
+    refreshProfilesButton.addEventListener('click', () => window.location.reload());
+
+    viewAllMatchesLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        activeTab = 'matches';
+        updateView();
+    });
+
+    // --- INITIALIZATION ---
+    lucide.createIcons();
+    renderMatches();
+    renderConnectProfile();
+    updateView();
+});
+</script>
 
 </body>
 </html>

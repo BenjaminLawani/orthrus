@@ -28,7 +28,7 @@ from src.common.config import settings
 
 profile_router = APIRouter(
     tags=["PROFILE"],
-    prefix = f"{settings.API_VERSION}/profile"
+    prefix=f"{settings.API_VERSION}/profile"
 )
 
 @profile_router.post("/", response_model=ProfileResponse)
@@ -38,27 +38,39 @@ def create_profile(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),  
 ):
+    print(f"Current user: {str(current_user.id) if current_user else 'None'}")
+    print(f"Authorization header: {request.headers.get('authorization', 'Missing')}")
     existing_profile = db.query(UserProfile).filter_by(user_id=current_user.id).first()
     if existing_profile:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Profile already exists",
         )
+    
     try:
         new_profile = UserProfile(
-            role = profile.role,
-            bio = profile.bio,
-            interests = profile.interests,
-            linkedin_url = profile.linkedin_url,
+            user_id=str(current_user.id),  # Added missing user_id
+            role=profile.role,
+            bio=profile.bio,
+            interests=profile.interests,
+            linkedin_url=profile.linkedin_url,
         )
         db.add(new_profile)
         db.commit()
         db.refresh(new_profile)
+        
+        # Return the profile response
+        return ProfileResponse(
+            id=new_profile.user_id,
+            role=new_profile.role,
+            bio=new_profile.bio,
+            interests=new_profile.interests,
+            linkedin_url=new_profile.linkedin_url,
+        )
 
     except Exception as e:
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail= f"An error: {e}, occurred."
+            detail=f"An error occurred while creating profile: {str(e)}"
         )
-    

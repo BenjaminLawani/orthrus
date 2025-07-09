@@ -115,7 +115,7 @@ def get_matches(
     current_user: User = Depends(get_current_user)
 ):
     """Get top matches for a user"""
-    matches = find_matches(str(current_user.id, limit))
+    matches = find_matches(str(current_user.id), limit)
     
     if not matches:
         raise HTTPException(

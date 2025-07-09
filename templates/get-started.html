@@ -31,31 +31,20 @@
             </div>
 
             <form id="signupForm" class="space-y-6">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid ">
                     <div class="space-y-2">
-                        <label for="firstName" class="text-sm font-medium text-gray-700">
-                            First Name
+                        <label for="username" class="text-sm font-medium text-gray-700">
+                            Username
                         </label>
                         <input
-                            id="firstName"
+                            id="username"
                             type="text"
-                            placeholder="John"
+                            placeholder="Benjamin"
                             required
                             class="h-12 text-base border border-gray-200 focus:border-gray-400 focus:ring-0 w-full px-3 py-2 rounded-md"
                         />
                     </div>
-                    <div class="space-y-2">
-                        <label for="lastName" class="text-sm font-medium text-gray-700">
-                            Last Name
-                        </label>
-                        <input
-                            id="lastName"
-                            type="text"
-                            placeholder="Doe"
-                            required
-                            class="h-12 text-base border border-gray-200 focus:border-gray-400 focus:ring-0 w-full px-3 py-2 rounded-md"
-                        />
-                    </div>
+    
                 </div>
 
                 <div class="space-y-2">
@@ -67,18 +56,6 @@
                         type="email"
                         placeholder="john@example.com"
                         required
-                        class="h-12 text-base border border-gray-200 focus:border-gray-400 focus:ring-0 w-full px-3 py-2 rounded-md"
-                    />
-                </div>
-
-                <div class="space-y-2">
-                    <label for="company" class="text-sm font-medium text-gray-700">
-                        Company
-                    </label>
-                    <input
-                        id="company"
-                        type="text"
-                        placeholder="Your company name"
                         class="h-12 text-base border border-gray-200 focus:border-gray-400 focus:ring-0 w-full px-3 py-2 rounded-md"
                     />
                 </div>
@@ -152,6 +129,8 @@
                         I'd like to receive product updates and networking tips via email
                     </label>
                 </div>
+                
+                <div id="errorMessage" class="hidden text-red-500 text-center text-sm py-2"></div>
 
                 <button
                     type="submit"
@@ -226,10 +205,10 @@
             </p>
 
             <div class="space-y-4">
-                <button class="w-full h-12 text-base font-medium bg-gray-900 hover:bg-gray-800 text-white rounded-md transition-colors">
+                <a href="/dashboard" class="w-full h-12 text-base font-medium bg-gray-900 hover:bg-gray-800 text-white rounded-md transition-colors flex items-center justify-center">
                     Go to Dashboard
-                </button>
-                <button class="w-full h-12 text-base border border-gray-200 hover:bg-gray-50 bg-transparent rounded-md transition-colors">
+                </a>
+                <button id="resendBtn" class="w-full h-12 text-base border border-gray-200 hover:bg-gray-50 bg-transparent rounded-md transition-colors">
                     Resend Verification Email
                 </button>
             </div>
@@ -257,6 +236,7 @@
         // State management
         let isLoading = false;
         let step = 1;
+        let userEmail = ''; // Store email for resend functionality
 
         // Password visibility toggle
         function togglePassword(fieldId) {
@@ -271,37 +251,103 @@
                 field.type = 'password';
                 icon.setAttribute('data-lucide', 'eye');
             }
-            
-            // Re-initialize icons after changing
             lucide.createIcons();
         }
 
         // Form submission
         document.getElementById('signupForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             if (isLoading) return;
             
-            isLoading = true;
             const submitBtn = document.getElementById('submitBtn');
+            const errorMessageDiv = document.getElementById('errorMessage');
+            
+            // Reset UI
+            errorMessageDiv.classList.add('hidden');
+            errorMessageDiv.textContent = '';
+            
+            // Get form data
+            const firstName = document.getElementById('firstName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Client-side validation
+            if (password !== confirmPassword) {
+                errorMessageDiv.textContent = 'Passwords do not match.';
+                errorMessageDiv.classList.remove('hidden');
+                return;
+            }
+
+            isLoading = true;
             submitBtn.textContent = 'Creating Account...';
             submitBtn.disabled = true;
             
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            isLoading = false;
-            
-            if (step === 1) {
+            try {
+                const response = await fetch('/v1/auth/get-started', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: firstName, // Using first name as the username
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'An unknown error occurred.');
+                }
+                
+                // --- Success ---
+                userEmail = email; // Store email for resend functionality
                 step = 2;
-                // Hide step 1 and show step 2
                 document.getElementById('step1').style.display = 'none';
                 document.getElementById('step2').style.display = 'flex';
-                document.querySelector('header').style.display = 'none';
+                document.querySelector('body > header').style.display = 'none';
                 document.getElementById('successHeader').style.display = 'block';
-                
-                // Re-initialize icons for the success step
                 lucide.createIcons();
+
+            } catch (error) {
+                errorMessageDiv.textContent = error.message;
+                errorMessageDiv.classList.remove('hidden');
+            } finally {
+                isLoading = false;
+                submitBtn.textContent = 'Create Account';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Event listener for the "Resend Verification Email" button
+        document.getElementById('resendBtn').addEventListener('click', async (e) => {
+            const resendBtn = e.target;
+            resendBtn.textContent = 'Sending...';
+            resendBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/v1/auth/request-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Failed to send email.');
+                }
+                
+                resendBtn.textContent = 'Verification Email Sent!';
+                // Briefly show success message, then revert
+                setTimeout(() => {
+                    resendBtn.textContent = 'Resend Verification Email';
+                    resendBtn.disabled = false;
+                }, 3000);
+
+            } catch (error) {
+                alert(`Error: ${error.message}`); // Simple alert for this secondary action
+                resendBtn.textContent = 'Resend Verification Email';
+                resendBtn.disabled = false;
             }
         });
     </script>

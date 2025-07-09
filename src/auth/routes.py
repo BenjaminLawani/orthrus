@@ -36,12 +36,24 @@ from src.common.security import (
     create_access_token
 )
 
+templates = Jinja2Templates(directory="templates")
 
 auth_router = APIRouter(
     tags=["AUTHENTICATION"],
     prefix = f"{settings.API_VERSION}/auth"
 )
 
+@auth_router.get("/login")
+def get_login_page_route(request: Request):
+    return templates.TemplateResponse("login.html", {"request":request})
+
+@auth_router.get("/get-started")
+def get_login_page_route(request: Request):
+    return templates.TemplateResponse("get-started.html", {"request":request})
+
+@auth_router.get("/verify-otp")
+def get_login_page_route(request: Request):
+    return templates.TemplateResponse("verify-otp.html", {"request":request})
 
 @auth_router.post("/login", response_model=Token)
 def login_route(

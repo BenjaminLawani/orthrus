@@ -23,7 +23,7 @@ def get_user_interests(user_id: str) -> Optional[Dict[str, Any]]:
     session = SessionLocal()
     try:
         result = session.execute(
-            text("SELECT interests FROM users WHERE user_id = :user_id"),
+            text("SELECT interests FROM user_profiles WHERE user_id = :user_id"),
             {"user_id": user_id}
         ).fetchone()
         return result[0] if result else None
@@ -38,7 +38,7 @@ def get_potential_matches(user_id: str, limit: int = 50) -> List[Dict[str, Any]]
     session = SessionLocal()
     try:
         result = session.execute(
-            text("SELECT user_id, interests FROM users WHERE user_id != :user_id LIMIT :limit"),
+            text("SELECT user_id, interests FROM user_profiles WHERE user_id != :user_id LIMIT :limit"),
             {"user_id": user_id, "limit": limit}
         ).fetchall()
         return [{"user_id": str(row[0]), "interests": row[1]} for row in result]
@@ -77,7 +77,7 @@ def analyze_compatibility(user1_interests: Dict, user2_interests: Dict) -> Dict[
     
     try:
         response = groq_client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": "You are an expert relationship compatibility analyzer. Always respond with valid JSON."},
                 {"role": "user", "content": prompt}

@@ -20,12 +20,14 @@
             <nav class="hidden md:flex items-center space-x-8">
                 <a href="#features" class="text-gray-600 hover:text-gray-900 transition-colors">Features</a>
                 <a href="#how-it-works" class="text-gray-600 hover:text-gray-900 transition-colors">How it Works</a>
-                <button class="border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-50 transition-colors">
+                <a href="/v1/auth/login"><button class="border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-50 transition-colors">
                     Sign In
                 </button>
-                <button class="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors">
+                </a>
+                <a href="/v1/auth/get-started"><button class="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors">
                     Get Started
                 </button>
+                </a>
             </nav>
         </div>
     </header>
@@ -264,28 +266,32 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-32 px-6 bg-gray-900 text-white">
-        <div class="container mx-auto text-center max-w-4xl">
-            <h2 class="text-4xl md:text-6xl font-bold mb-8">
-                Ready to Network
-                <br>
-                <span class="text-gray-400">Smarter?</span>
-            </h2>
-            <p class="text-xl text-gray-300 mb-12 leading-relaxed">
-                Join thousands of professionals who are making meaningful connections at every event.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-                <button class="bg-white text-gray-900 px-8 py-4 text-lg rounded-md hover:bg-gray-100 transition-colors flex items-center">
-                    Get Started Free
-                    <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i>
-                </button>
-                <button class="border border-gray-600 text-white px-8 py-4 text-lg rounded-md bg-transparent hover:bg-gray-800 transition-colors">
-                    Book a Demo
-                </button>
-            </div>
-            <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input type="email" placeholder="Enter your email" class="bg-gray-800 border border-gray-700 text-white placeholder-gray-400 px-3 py-2 rounded-md flex-1">
-                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors">Join Waitlist</button>
+    <section class="py-20 px-6">
+        <div class="container mx-auto">
+            <div class="bg-gray-900 text-white px-10 py-16 xl:p-20 rounded-[40px] relative overflow-hidden">
+                <div class="text-center max-w-4xl mx-auto">
+                    <h2 class="text-4xl md:text-6xl font-bold mb-8">
+                        Ready to Network
+                        <br>
+                        <span class="text-gray-400">Smarter?</span>
+                    </h2>
+                    <p class="text-xl text-gray-300 mb-12 leading-relaxed">
+                        Join thousands of professionals who are making meaningful connections at every event.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+                        <button class="bg-white text-gray-900 px-8 py-4 text-lg rounded-md hover:bg-gray-100 transition-colors flex items-center">
+                            Get Started Free
+                            <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i>
+                        </button>
+                        <button class="border border-gray-600 text-white px-8 py-4 text-lg rounded-md bg-transparent hover:bg-gray-800 transition-colors">
+                            Book a Demo
+                        </button>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                        <input type="email" placeholder="Enter your email" class="bg-gray-800 border border-gray-700 text-white placeholder-gray-400 px-3 py-2 rounded-md flex-1">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors">Join Waitlist</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
