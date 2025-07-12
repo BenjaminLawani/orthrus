@@ -22,7 +22,8 @@ dashboard_router = APIRouter(
 
 @dashboard_router.get("/")
 def display_dashboard_route(
-    request: Request):
+    request: Request,
+    current_user: User = Depends(get_current_user)):
     try:
         return templates.TemplateResponse("dashboard.html", {"request": request})
     except Exception as e:
@@ -31,6 +32,6 @@ def display_dashboard_route(
             detail=f"An error: {e} occurred while fetching the dashboard"
         )
     
-@dashboard_router.post("/redirect")
-def dashboard_redirect(current_user: User = Depends(get_current_user)):
-    return RedirectResponse(url="/dashboard/")
+# @dashboard_router.get("/redirect")
+# def dashboard_redirect(current_user: User = Depends(get_current_user)):
+#     return RedirectResponse(url=f"/{settings.API_VERSION}/dashboard/")

@@ -48,11 +48,11 @@ def get_login_page_route(request: Request):
     return templates.TemplateResponse("login.html", {"request":request})
 
 @auth_router.get("/get-started")
-def get_login_page_route(request: Request):
+def get_signup_page_route(request: Request):
     return templates.TemplateResponse("get-started.html", {"request":request})
 
 @auth_router.get("/verify-otp")
-def get_login_page_route(request: Request):
+def get_verify_otp_route(request: Request):
     return templates.TemplateResponse("verify-otp.html", {"request":request})
 
 @auth_router.post("/login", response_model=Token)
@@ -150,7 +150,7 @@ async def request_otp_code(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to send OTP: {str(e)}"
         )
-    # REMOVED: Duplicate exception block
+
     
 @auth_router.post("/validate-otp")
 def validate_otp_route(

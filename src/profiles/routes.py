@@ -13,7 +13,7 @@ from fastapi import (
     Request,
 )
 from fastapi.responses import JSONResponse
-
+from fastapi.templating import Jinja2Templates
 from .schemas import (
     ProfileCreate,
     ProfileUpdate,
@@ -25,13 +25,14 @@ from src.common.database import get_db
 from src.common.security import get_current_user
 from src.common.config import settings
 
+templates = Jinja2Templates(directory="templates")
 
 profile_router = APIRouter(
     tags=["PROFILE"],
     prefix=f"{settings.API_VERSION}/profile"
 )
 
-@profile_router.post("/", response_model=ProfileResponse)
+@profile_router.post("/create-profile", response_model=ProfileResponse)
 def create_profile(
     request: Request,
     profile: ProfileCreate,
@@ -74,3 +75,7 @@ def create_profile(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while creating profile: {str(e)}"
         )
+    
+@profile_router.get("/create-profile")
+def get_create_profile_route(request: Request):
+    return templates.TemplateResponse("create-profile.html", {"request":request})

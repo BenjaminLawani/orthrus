@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Profile - MatchMySummit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom animation to match 'animate-fade-in' */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="p-6 border-b border-gray-100">
+            <div class="flex items-center justify-between max-w-4xl mx-auto">
+                <a href="/dashboard" class="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    Back to Dashboard
+                </a>
+                <a href="/" class="text-2xl font-bold text-black">
+                    MatchMySummit
+                </a>
+                <div class="w-32"></div> <!-- Spacer for centering -->
+            </div>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="bg-white border-b border-gray-100 py-6">
+            <div class="max-w-2xl mx-auto px-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h1 class="text-2xl font-bold text-black">Create Your Profile</h1>
+                    <span id="step-counter" class="text-sm text-gray-500">
+                        Step 1 of 4
+                    </span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                    <div id="progress-bar" class="bg-black h-2 rounded-full transition-all duration-300" style="width: 25%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex items-center justify-center px-6 py-12">
+            <div class="w-full max-w-2xl">
+                <!-- Step content will be injected here -->
+                <div id="step-container">
+                    <!-- Step 1: Basic Info -->
+                    <div id="step-1" class="animate-fade-in">
+                        <div class="space-y-8">
+                            <div class="text-center mb-8">
+                                <h2 class="text-3xl font-bold text-black mb-3">Let's start with the basics</h2>
+                                <p class="text-gray-600 text-lg">Tell us a bit about yourself</p>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label for="firstName" class="text-sm font-medium text-gray-700">First Name *</label>
+                                        <input id="firstName" type="text" placeholder="John" class="h-12 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-0">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label for="lastName" class="text-sm font-medium text-gray-700">Last Name *</label>
+                                        <input id="lastName" type="text" placeholder="Doe" class="h-12 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-0">
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label for="location" class="text-sm font-medium text-gray-700">Location *</label>
+                                    <input id="location" type="text" placeholder="San Francisco, CA" class="h-12 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-0">
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label for="website" class="text-sm font-medium text-gray-700">Website (Optional)</label>
+                                    <input id="website" type="url" placeholder="https://yourwebsite.com" class="h-12 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-0">
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label for="linkedin" class="text-sm font-medium text-gray-700">LinkedIn (Optional)</label>
+                                        <input id="linkedin" type="text" placeholder="linkedin.com/in/johndoe" class="h-12 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-0">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label for="twitter" class="text-sm font-medium text-gray-700">Twitter (Optional)</label>
+                                        <input id="twitter" type="text" placeholder="@johndoe" class="h-12 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Professional Info -->
+                    <div id="step-2" class="animate-fade-in hidden">
+                        <div class="space-y-8">
+                            <div class="text-center mb-8">
+                                <h2 class="text-3xl font-bold text-black mb-3">Professional Information</h2>
+                                <p class="text-gray-600 text-lg">Help others understand your professional background</p>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div class="flex flex-col items-center space-y-4">
+                                    <div class="relative">
+                                        <div class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                            <img id="avatar-image" src="https://placehold.co/96x96/e2e8f0/e2e8f0" class="w-full h-full object-cover">
+                                            <div id="avatar-fallback" class="text-2xl text-gray-500"></div>
+                                        </div>
+                                        <label for="profileImage" class="absolute -bottom-2 -right-2 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-800 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                                        </label>
+                                        <input id="profileImage" type="file" accept="image/*" class="hidden">
+                                    </div>
+                                    <p class="text-sm text-gray-500">Upload a profile photo</p>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label for="title" class="text-sm font-medium text-gray-700">Job Title *</label>
+                                        <input id="title" type="text" placeholder="Senior Software Engineer" class="h-12 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-0">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label for="company" class="text-sm font-medium text-gray-700">Company *</label>
+                                        <input id="company" type="text" placeholder="Google" class="h-12 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-0">
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label for="bio" class="text-sm font-medium text-gray-700">Bio *</label>
+                                    <textarea id="bio" placeholder="Tell us about yourself, your interests, and what you're passionate about..." maxlength="500" class="flex min-h-[128px] w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-0 resize-none"></textarea>
+                                    <p id="bio-char-count" class="text-xs text-gray-500 text-right">0/500 characters</p>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label for="experience" class="text-sm font-medium text-gray-700">Professional Experience (Optional)</label>
+                                    <textarea id="experience" placeholder="Briefly describe your professional background and key achievements..." maxlength="300" class="flex min-h-[96px] w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-base ring-offset-white placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-0 resize-none"></textarea>
+                                    <p id="experience-char-count" class="text-xs text-gray-500 text-right">0/300 characters</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Interests -->
+                    <div id="step-3" class="animate-fade-in hidden">
+                        <div class="space-y-8">
+                            <div class="text-center mb-8">
+                                <h2 class="text-3xl font-bold text-black mb-3">What are your interests?</h2>
+                                <p class="text-gray-600 text-lg">Select at least 3 areas that interest you (helps us find better matches)</p>
+                            </div>
+                            <div class="space-y-6">
+                                <div id="interests-container" class="flex flex-wrap gap-3">
+                                    <!-- Interests buttons will be generated here by JS -->
+                                </div>
+                                <div class="text-center">
+                                    <p id="interests-count" class="text-sm text-gray-500">Selected: 0 (minimum 3 required)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Goals -->
+                    <div id="step-4" class="animate-fade-in hidden">
+                        <div class="space-y-8">
+                            <div class="text-center mb-8">
+                                <h2 class="text-3xl font-bold text-black mb-3">What are your networking goals?</h2>
+                                <p class="text-gray-600 text-lg">Select at least 2 goals to help us connect you with the right people</p>
+                            </div>
+                            <div class="space-y-6">
+                                <div id="goals-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <!-- Goals buttons will be generated here by JS -->
+                                </div>
+                                <div class="text-center">
+                                    <p id="goals-count" class="text-sm text-gray-500">Selected: 0 (minimum 2 required)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between mt-12">
+                    <button id="prev-button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-100 h-10 px-4 py-2 hover:bg-gray-50 transition-colors duration-200 disabled:cursor-not-allowed">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                        Previous
+                    </button>
+
+                    <button id="next-button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-black text-white hover:bg-gray-900 h-10 px-4 py-2 hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400">
+                        Next
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+
+                    <button id="submit-button" class="hidden inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-black text-white hover:bg-gray-900 h-10 px-4 py-2 hover:bg-gray-800 transition-colors duration-200 disabled:bg-gray-400">
+                        <span id="submit-button-text">Complete Profile</span>
+                        <svg id="submit-button-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-2"><path d="M20 6 9 17l-5-5"/></svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- STATE ---
+            let currentStep = 1;
+            let isLoading = false;
+            const totalSteps = 4;
+            const profileData = {
+                firstName: "",
+                lastName: "",
+                title: "",
+                company: "",
+                location: "",
+                bio: "",
+                experience: "",
+                website: "",
+                linkedin: "",
+                twitter: "",
+                selectedInterests: [],
+                selectedGoals: [],
+                profileImage: null,
+            };
+
+            const interests = [
+                "Artificial Intelligence", "Machine Learning", "Blockchain", "Cybersecurity", "Data Science", "Cloud Computing",
+                "Mobile Development", "Web Development", "DevOps", "Product Management", "UX/UI Design", "Digital Marketing",
+                "E-commerce", "Fintech", "Healthcare Tech", "EdTech", "Startup Funding", "Venture Capital", "Angel Investing",
+                "Entrepreneurship", "Leadership", "Team Management", "Business Strategy", "Sales", "Customer Success",
+            ];
+
+            const networkingGoals = [
+                "Find co-founders", "Seek investors", "Hire talent", "Find job opportunities", "Learn new skills",
+                "Industry insights", "Partnership opportunities", "Mentorship", "Speaking opportunities", "Business development",
+            ];
+
+            // --- DOM ELEMENTS ---
+            const stepContainer = document.getElementById('step-container');
+            const stepCounter = document.getElementById('step-counter');
+            const progressBar = document.getElementById('progress-bar');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+            const submitButton = document.getElementById('submit-button');
+
+            // --- FUNCTIONS ---
+            const isStepValid = () => {
+                switch (currentStep) {
+                    case 1:
+                        return profileData.firstName && profileData.lastName && profileData.location;
+                    case 2:
+                        return profileData.title && profileData.company && profileData.bio;
+                    case 3:
+                        return profileData.selectedInterests.length >= 3;
+                    case 4:
+                        return profileData.selectedGoals.length >= 2;
+                    default:
+                        return false;
+                }
+            };
+
+            const updateButtonState = () => {
+                prevButton.disabled = currentStep === 1;
+                const isValid = isStepValid();
+                if (currentStep === totalSteps) {
+                    submitButton.disabled = !isValid || isLoading;
+                } else {
+                    nextButton.disabled = !isValid;
+                }
+            };
+            
+            const renderCurrentStep = () => {
+                // Hide all steps
+                for (let i = 1; i <= totalSteps; i++) {
+                    document.getElementById(`step-${i}`).classList.add('hidden');
+                }
+                // Show current step
+                const currentStepElement = document.getElementById(`step-${currentStep}`);
+                currentStepElement.classList.remove('hidden');
+                // Use a trick to re-trigger animation
+                currentStepElement.classList.remove('animate-fade-in');
+                void currentStepElement.offsetWidth;
+                currentStepElement.classList.add('animate-fade-in');
+
+                // Update UI elements
+                stepCounter.textContent = `Step ${currentStep} of ${totalSteps}`;
+                progressBar.style.width = `${(currentStep / totalSteps) * 100}%`;
+
+                // Show/hide nav buttons
+                if (currentStep === totalSteps) {
+                    nextButton.classList.add('hidden');
+                    submitButton.classList.remove('hidden');
+                } else {
+                    nextButton.classList.remove('hidden');
+                    submitButton.classList.add('hidden');
+                }
+                updateButtonState();
+            };
+
+            // --- EVENT HANDLERS ---
+            const handleNext = () => {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    renderCurrentStep();
+                }
+            };
+
+            const handlePrevious = () => {
+                if (currentStep > 1) {
+                    currentStep--;
+                    renderCurrentStep();
+                }
+            };
+
+            const handleSubmit = async () => {
+                isLoading = true;
+                const submitButtonText = document.getElementById('submit-button-text');
+                const submitButtonIcon = document.getElementById('submit-button-icon');
+                
+                submitButtonText.textContent = "Creating Profile...";
+                submitButtonIcon.classList.add('hidden');
+                updateButtonState();
+                
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                isLoading = false;
+                console.log("Profile Created:", profileData);
+                // Redirect
+                window.location.href = "/dashboard";
+            };
+            
+            const handleInputChange = (e) => {
+                const { id, value } = e.target;
+                profileData[id] = value;
+                updateButtonState();
+
+                // Character counters
+                if (id === 'bio') {
+                    document.getElementById('bio-char-count').textContent = `${value.length}/500 characters`;
+                }
+                if (id === 'experience') {
+                    document.getElementById('experience-char-count').textContent = `${value.length}/300 characters`;
+                }
+                // Avatar fallback
+                if (id === 'firstName' || id === 'lastName') {
+                    const fallback = document.getElementById('avatar-fallback');
+                    const first = profileData.firstName?.[0] || '';
+                    const last = profileData.lastName?.[0] || '';
+                    fallback.textContent = `${first}${last}`.toUpperCase();
+                }
+            };
+
+            const handleImageUpload = (e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        profileData.profileImage = event.target.result;
+                        document.getElementById('avatar-image').src = event.target.result;
+                        document.getElementById('avatar-fallback').classList.add('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            // --- INITIALIZATION ---
+
+            // Attach listeners to static elements
+            prevButton.addEventListener('click', handlePrevious);
+            nextButton.addEventListener('click', handleNext);
+            submitButton.addEventListener('click', handleSubmit);
+
+            // Attach listeners to all inputs
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', handleInputChange);
+                if (input.type === 'file') {
+                    input.addEventListener('change', handleImageUpload);
+                }
+            });
+
+            // Generate dynamic content (Interests)
+            const interestsContainer = document.getElementById('interests-container');
+            interests.forEach(interest => {
+                const button = document.createElement('button');
+                button.textContent = interest;
+                button.className = 'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-gray-100 text-gray-700 hover:bg-gray-200';
+                button.dataset.interest = interest;
+                button.addEventListener('click', () => {
+                    if (profileData.selectedInterests.includes(interest)) {
+                        profileData.selectedInterests = profileData.selectedInterests.filter(i => i !== interest);
+                        button.className = 'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-gray-100 text-gray-700 hover:bg-gray-200';
+                        button.innerHTML = interest;
+                    } else {
+                        profileData.selectedInterests.push(interest);
+                        button.className = 'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-black text-white';
+                        button.innerHTML = `${interest} <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 ml-2 inline"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>`;
+                    }
+                    const count = profileData.selectedInterests.length;
+                    const required = 3;
+                    document.getElementById('interests-count').textContent = `Selected: ${count} ${count < required ? `(minimum ${required} required)` : ''}`;
+                    updateButtonState();
+                });
+                interestsContainer.appendChild(button);
+            });
+
+            // Generate dynamic content (Goals)
+            const goalsContainer = document.getElementById('goals-container');
+            networkingGoals.forEach(goal => {
+                const button = document.createElement('button');
+                button.className = 'p-4 rounded-xl text-left transition-all duration-200 border-2 border-gray-200 bg-white text-gray-700 hover:border-gray-300';
+                button.dataset.goal = goal;
+
+                const plusIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-gray-400"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>`;
+                const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M20 6 9 17l-5-5"/></svg>`;
+                
+                button.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium">${goal}</span>
+                        <span class="goal-icon">${plusIcon}</span>
+                    </div>`;
+
+                button.addEventListener('click', () => {
+                    const iconSpan = button.querySelector('.goal-icon');
+                    if (profileData.selectedGoals.includes(goal)) {
+                        profileData.selectedGoals = profileData.selectedGoals.filter(g => g !== goal);
+                        button.className = 'p-4 rounded-xl text-left transition-all duration-200 border-2 border-gray-200 bg-white text-gray-700 hover:border-gray-300';
+                        iconSpan.innerHTML = plusIcon;
+                    } else {
+                        profileData.selectedGoals.push(goal);
+                        button.className = 'p-4 rounded-xl text-left transition-all duration-200 border-2 border-black bg-black text-white';
+                        iconSpan.innerHTML = checkIcon;
+                    }
+                     const count = profileData.selectedGoals.length;
+                    const required = 2;
+                    document.getElementById('goals-count').textContent = `Selected: ${count} ${count < required ? `(minimum ${required} required)` : ''}`;
+                    updateButtonState();
+                });
+                goalsContainer.appendChild(button);
+            });
+
+            // Initial render
+            renderCurrentStep();
+        });
+    </script>
+</body>
+</html>

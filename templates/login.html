@@ -216,7 +216,7 @@
                 // --- Success ---
                 // Store the token (e.g., in localStorage) and redirect
                 localStorage.setItem('accessToken', data.access_token);
-                window.location.href = '/v1/dashboard/redirect'; // Redirect to a protected page
+                window.location.href = '/v1/dashboard/'; // Redirect to a protected page
 
             } catch (error) {
                 errorMessageDiv.textContent = error.message;

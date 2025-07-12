@@ -30,7 +30,7 @@ match_router = APIRouter(
 )
 
 @match_router.post("/{target_user_id}")
-def swipe_right(
+def accept_match(
     target_user_id: UUID,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -77,7 +77,7 @@ def swipe_right(
                     "match_id": str(existing_match.id),
                     "matched_user": {
                         "id": str(target_user.id),
-                        "name": target_user.name  # Assuming User has name field
+                        "name": target_user.username  
                     }
                 }
             except IntegrityError:
@@ -110,7 +110,6 @@ def swipe_right(
         
 @match_router.get("/", response_model=MatchesResponse)
 def get_matches(
-    user_id: str,
     limit: int = Query(default=10, ge=1, le=50, description="Number of matches to return"),
     current_user: User = Depends(get_current_user)
 ):
@@ -124,14 +123,16 @@ def get_matches(
         )
     
     return MatchesResponse(
-        user_id=user_id,
+        user_id=str(current_user.id),
         matches=[MatchResult(**match) for match in matches]
     )
 
 @match_router.post("/compatibility", response_model=CompatibilityResponse)
-async def check_compatibility(request: CompatibilityRequest):
-    """Check compatibility between two specific users"""
-    result = single_match_analysis(request.user1_id, request.user2_id)
+async def check_compatibility(
+    request: CompatibilityRequest,
+    current_user: User = Depends(get_current_user)):
+    """Check compatibility between the current user and another user"""
+    result = single_match_analysis(request.str(current_user.id), request.user2_id)
     
     if not result:
         raise HTTPException(
